@@ -22,6 +22,8 @@ jobs:
       REED_API_KEY: ${{ secrets.REED_API_KEY }}
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
@@ -41,6 +43,9 @@ jobs:
 
       - name: Classify Greenhouse
         run: uv run python scripts/classify_greenhouse_batch.py
+
+      - name: Send digest
+        run: uv run python scripts/send_digest.py
 
       - name: Commit database
         run: |

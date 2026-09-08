@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     # Optional: enables the OpenRouter fallback when Gemini's daily quota
     # dies. Absent = fallback silently disabled, everything else works.
     openrouter_api_key: SecretStr | None = None
+    # Optional: enables the email digest. Absent = digest silently skipped.
+    gmail_address: str | None = None
+    gmail_app_password: SecretStr | None = None
 
 
 def get_settings() -> Settings:

@@ -47,6 +47,13 @@ CREATE TABLE IF NOT EXISTS classifications (
     PRIMARY KEY (source, id),
     FOREIGN KEY (source, id) REFERENCES jobs (source, id)
 );
+
+CREATE TABLE IF NOT EXISTS digested (
+    source TEXT NOT NULL,
+    id TEXT NOT NULL,
+    sent_at TEXT NOT NULL,
+    PRIMARY KEY (source, id)
+);
 """
 
 
@@ -169,3 +176,20 @@ def qualifying_jobs(conn: sqlite3.Connection) -> list[sqlite3.Row]:
         ORDER BY c.classified_at DESC
         """
     ).fetchall()
+
+
+def undigested_keys(conn: sqlite3.Connection) -> set[tuple[str, str]]:
+    """(source, id) pairs already included in a sent digest."""
+    rows = conn.execute("SELECT source, id FROM digested").fetchall()
+    return {(r["source"], r["id"]) for r in rows}
+
+
+def mark_digested(conn: sqlite3.Connection, keys: list[tuple[str, str]]) -> None:
+    """Record that these jobs were included in a successfully sent digest.
+    Call ONLY after the send succeeded - unsent jobs must stay eligible."""
+    now = _now()
+    conn.executemany(
+        "INSERT OR IGNORE INTO digested (source, id, sent_at) VALUES (?, ?, ?)",
+        [(s, i, now) for s, i in keys],
+    )
+    conn.commit()
