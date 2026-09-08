@@ -54,3 +54,8 @@ outputs, Gemini + OpenRouter + Ollama.
   dataset starts accruing then.
 
 ## Run it
+
+    uv sync
+    cp .env.example .env   # add your own API keys
+    uv run pytest
+    uv run python scripts/classify_greenhouse_batch.py
