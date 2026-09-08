@@ -1,7 +1,6 @@
-from jobagg.config import Settings
-
-
 import pytest as _pytest
+
+from jobagg.config import Settings
 
 
 @_pytest.fixture(autouse=True)
