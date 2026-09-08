@@ -1,6 +1,26 @@
 from jobagg.config import Settings
 
 
+import pytest as _pytest
+
+
+@_pytest.fixture(autouse=True)
+def _clean_env(monkeypatch):
+    """Tests must see only their own temp .env files - never ambient
+    environment variables. In CI the real secrets are exported as env vars,
+    and pydantic-settings reads the environment BEFORE .env files, which
+    broke these tests until they became hermetic."""
+    for var in (
+        "ADZUNA_APP_ID",
+        "ADZUNA_APP_KEY",
+        "REED_API_KEY",
+        "GEMINI_API_KEY",
+        "OPENROUTER_API_KEY",
+        "GROQ_API_KEY",
+    ):
+        monkeypatch.delenv(var, raising=False)
+
+
 def test_settings_load_from_env(monkeypatch, tmp_path):
     env_file = tmp_path / ".env"
     env_file.write_text(
