@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     adzuna_app_id: SecretStr
     adzuna_app_key: SecretStr
     reed_api_key: SecretStr
+    gemini_api_key: SecretStr
+    # Optional: enables the OpenRouter fallback when Gemini's daily quota
+    # dies. Absent = fallback silently disabled, everything else works.
+    openrouter_api_key: SecretStr | None = None
 
 
 def get_settings() -> Settings:
