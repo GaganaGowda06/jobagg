@@ -44,6 +44,9 @@ jobs:
       - name: Classify Greenhouse
         run: uv run python scripts/classify_greenhouse_batch.py
 
+      - name: Classify Workable
+        run: uv run python scripts/classify_workable_batch.py
+
       - name: Send digest
         run: uv run python scripts/send_digest.py
 
