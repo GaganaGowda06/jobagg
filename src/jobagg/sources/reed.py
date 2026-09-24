@@ -1,6 +1,8 @@
 """Reed job search client."""
 
+import html as _html
 import logging
+import re as _re
 from datetime import datetime
 
 import requests
@@ -100,3 +102,36 @@ def search(
     )
 
     return data
+
+
+def _strip_html(text: str | None) -> str | None:
+    """Strip tags, unescape entities, collapse whitespace. Reed's details
+    endpoint returns HTML; the search endpoint returns plain text."""
+    if not text:
+        return None
+    no_tags = _re.sub(r"<[^>]+>", " ", text)
+    unescaped = _html.unescape(no_tags)
+    return _re.sub(r"\s+", " ", unescaped).strip() or None
+
+
+def fetch_full_description(job_id: str | int) -> str | None:
+    """Fetch a job's FULL description from Reed's details endpoint.
+
+    The search endpoint truncates descriptions at ~450 characters, which
+    measurably hurt classification (reed was the weakest source in every
+    eval slice). The details endpoint returns the whole posting (~3000+
+    chars of HTML) - probed live Sep 2026. Returns None on any failure so
+    callers can keep the truncated text as a fallback.
+    """
+    settings = get_settings()
+    try:
+        response = _session.get(
+            f"https://www.reed.co.uk/api/1.0/jobs/{job_id}",
+            auth=(settings.reed_api_key.get_secret_value(), ""),
+            timeout=30,
+        )
+        response.raise_for_status()
+        return _strip_html(response.json().get("jobDescription"))
+    except requests.exceptions.RequestException as e:
+        logger.warning("Reed details for %r failed (%s)", job_id, type(e).__name__)
+        return None

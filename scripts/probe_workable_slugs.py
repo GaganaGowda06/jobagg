@@ -7,9 +7,23 @@ import requests
 from jobagg.sources.workable import LIST_URL, fetch_jobs
 
 CANDIDATES = [
-    "plum", "plum-fintech", "marshmallow", "curve", "zilch", "moneybox",
-    "wagestream", "yoti", "paddle", "beamery", "peak-ai", "signal-ai",
-    "tessian", "gophr", "ziglu", "fscom", "ipid",
+    "plum",
+    "plum-fintech",
+    "marshmallow",
+    "curve",
+    "zilch",
+    "moneybox",
+    "wagestream",
+    "yoti",
+    "paddle",
+    "beamery",
+    "peak-ai",
+    "signal-ai",
+    "tessian",
+    "gophr",
+    "ziglu",
+    "fscom",
+    "ipid",
 ]
 
 
@@ -23,7 +37,7 @@ def main() -> None:
             data = r.json()
             total = len(data.get("jobs", []))
             passed = len(fetch_jobs(slug))
-            print(f"{slug:16} -> LIVE  {data.get('name', '?'):24} {total:3} jobs, {passed} pass filter")
+            print(f"{slug:16} -> LIVE  {data.get('name', '?'):24} {total:3} jobs, {passed} pass")
         except requests.exceptions.RequestException as e:
             print(f"{slug:16} -> {type(e).__name__}")
 

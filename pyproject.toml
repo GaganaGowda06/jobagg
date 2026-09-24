@@ -5,7 +5,6 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "google-genai>=2.21.0",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.15.0",
     "requests>=2.34.2",
@@ -31,6 +30,9 @@ target-version = "py313"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "N"]
 
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
